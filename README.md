@@ -30,3 +30,17 @@ Ce dépôt fait partie d'un système complet de monitoring intelligent pour mon 
 ## Utilisation
 ```bash
 pio run --target upload
+
+
+## Installation (PlatformIO)
+
+```bash
+# Cloner le dépôt
+git clone https://github.com/Code1deep/living-lab-sensors.git
+cd living-lab-sensors
+
+# Compiler et flasher l'ESP32
+pio run --target upload
+
+# Monitoring série
+pio device monitor
