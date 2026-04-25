@@ -2,13 +2,23 @@
 #include <PubSubClient.h>
 #include <ArduinoJson.h>
 #include "config.h"
+#include <time.h> // Bibliothèque standard
 
 WiFiClient espClient;
 PubSubClient client(espClient);
 
+const char* ntpServer = "pool.ntp.org";
+const long  gmtOffset_sec = 3600;      // Ajuste selon mon fuseau horaire (ex: 3600 pour UTC+1)
+const int   daylightOffset_sec = 3600; // Ajuste pour l'heure d'été
+
 void setup() {
   Serial.begin(115200);
   setup_wifi();
+  
+  // Initialisation du temps via NTP
+  configTime(gmtOffset_sec, daylightOffset_sec, ntpServer);
+  Serial.println("Synchronisation du temps en cours...");
+  
   client.setServer(MQTT_BROKER, 1883);
 }
 
