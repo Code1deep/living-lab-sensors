@@ -66,11 +66,13 @@ void publier_donnees() {
     doc["sensor"] = "ph";
     doc["value"] = ph_value;
     doc["unit"] = "pH";
-    doc["timestamp"] = "2026-04-24T10:00:00Z"; // À remplacer par NTP
+    doc["timestamp"] = getISOTimestamp(); // Utilisation du temps réel
 
     // 3. Sérialisation JSON
-    char buffer[256];
+    char buffer[128];
     serializeJson(doc, buffer);
+    client.publish(MQTT_TOPIC, buffer);
+    Serial.println(buffer);
 
     // 4. Publication MQTT
     if (client.publish(MQTT_TOPIC, buffer)) {
@@ -80,3 +82,14 @@ void publier_donnees() {
         Serial.println("Échec de la publication MQTT");
     }
 }
+String getISOTimestamp() {
+    struct tm timeinfo;
+    if(!getLocalTime(&timeinfo)){
+        return "NTP_Error";
+    }
+    char buffer[25];
+    // Format: 2026-04-24T10:00:00Z
+    strftime(buffer, sizeof(buffer), "%Y-%m-%dT%H:%M:%SZ", &timeinfo);
+    return String(buffer);
+}
+
